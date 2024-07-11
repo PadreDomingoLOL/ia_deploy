@@ -26,6 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+port = 8000
 
 @app.get("/")
 async def root():
