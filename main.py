@@ -70,8 +70,6 @@ async def predict(file: UploadFile = File(...)):
         print("Modelo no disponible...")
         await download_model()
         print("Modelo descargado")
-    else:
-        return {'MOdelo pasado mal'}
     print("Modelo ecnontrado")
     try:
         model = load_model("model1.h5")
