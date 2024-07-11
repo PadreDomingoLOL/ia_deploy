@@ -40,7 +40,9 @@ async def predict(file: UploadFile = File(...)):
         
         # Preprocesar la imagen
         img = img.resize((224, 224))
+        img = img.convert('RGB')
         image_array = img_to_array(img)
+        image_array = image_array / 255.0
         image_array = np.expand_dims(image_array, axis=0)
         
         # Hacer la predicción
