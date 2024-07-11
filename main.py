@@ -54,7 +54,7 @@ async def download_model():
 async def startup_event():
     global downloaded 
     downloaded = True
-    download_model()
+    await download_model()
 
 
 @app.get("/")
