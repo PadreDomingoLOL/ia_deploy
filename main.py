@@ -50,6 +50,13 @@ async def download_model():
     except Exception as e:
         return {"error": str(e)}
 
+@app.on_event("startup")
+async def startup_event():
+    global downloaded 
+    downloaded = True
+    download_model()
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
@@ -57,6 +64,8 @@ async def root():
 @app.post("/api/predict/")
 async def predict(file: UploadFile = File(...)):
     global downloaded
+    if (not UploadFile):
+        return {'File not uploaded'}
     if (not downloaded):
         print("Modelo no disponible...")
         await download_model()
