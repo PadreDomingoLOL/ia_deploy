@@ -19,6 +19,7 @@ origins = [
     "*",
     "http://localhost",
     "http://localhost:3000",
+    "https://hamec.vercel.app/"
 ]
 
 modelId = os.getenv("MODEL_ID")
