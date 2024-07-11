@@ -5,6 +5,9 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 from PIL import Image
 import io
+import tensorflow as tf
+
+tf.get_logger().setLevel('ERROR')
 
 origins = [
     "*",
