@@ -61,8 +61,7 @@ async def predict(file: UploadFile = File(...)):
         await download_model()
         print("Modelo descargado")
     else:
-        if not os.path.exists("model1.h5"):
-            return {"prediction": "Severo"}
+        return {'MOdelo pasado mal'}
     print("Modelo ecnontrado")
     try:
         model = load_model("model1.h5")
