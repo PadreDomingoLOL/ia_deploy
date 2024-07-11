@@ -36,9 +36,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-from fastapi import FastAPI
-
-app = FastAPI()
 
 async def download_model():
     global downloaded
@@ -58,17 +55,18 @@ async def root():
 
 @app.post("/api/predict/")
 async def predict(file: UploadFile = File(...)):
-    #global downloaded
-    #if (not downloaded):
-    #    print("Modelo no disponible...")
-    #    await download_model()
-    #    print("Modelo descargado")
-    #else:
-    if not os.path.exists("model1.h5"):
-        return {"prediction": "Severo"}
-    print("Modelo cargado")
+    global downloaded
+    if (not downloaded):
+        print("Modelo no disponible...")
+        await download_model()
+        print("Modelo descargado")
+    else:
+        if not os.path.exists("model1.h5"):
+            return {"prediction": "Severo"}
+    print("Modelo ecnontrado")
     try:
         model = load_model("model1.h5")
+        print("modelo cargado")
         # Leer la imagen recibida
         contents = await file.read()
         img = Image.open(io.BytesIO(contents))
