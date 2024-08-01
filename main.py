@@ -1,22 +1,15 @@
-from fastapi import FastAPI, File, UploadFile
+import logging
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from keras.models import load_model
-from tensorflow.keras.preprocessing.image import img_to_array
-import numpy as np
+from tensorflow.keras.models import load_model
 from PIL import Image
 import io
-import tensorflow as tf
+import numpy as np
+from tensorflow.keras.preprocessing.image import img_to_array
 
-tf.get_logger().setLevel('ERROR')
+app = FastAPI()
 
-origins = [
-    "*",
-    "http://localhost",
-    "http://localhost:3000",
-    "https://hamec.vercel.app/"
-]
-
-app = FastAPI(title="ECG Classification API", description="API para clasificar ECGs", version="0.1.0")
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,18 +21,24 @@ app.add_middleware(
 
 port = 8000
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 @app.post("/api/predict/")
 async def predict(file: UploadFile = File(...)):
-    print("api predict")
+    logging.info("api predict called")
     try:
+        logging.info("Loading model")
         model = load_model("model1.h5")
-        print("modelo cargado")
+        logging.info("Model loaded successfully")
+        
         # Leer la imagen recibida
         contents = await file.read()
+        logging.info("File read successfully")
         img = Image.open(io.BytesIO(contents))
         
         # Preprocesar la imagen
@@ -48,11 +47,14 @@ async def predict(file: UploadFile = File(...)):
         image_array = img_to_array(img)
         image_array = image_array / 255.0
         image_array = np.expand_dims(image_array, axis=0)
+        logging.info("Image preprocessed successfully")
         
         # Hacer la predicción
         prediction = model.predict(image_array)
+        logging.info("Prediction made successfully")
         result = "Severo" if prediction[0][0] > 0.5 else "No Severo"
         
         return {"prediction": result}
     except Exception as e:
+        logging.error(f"Error occurred: {str(e)}")
         return {"error": str(e)}
